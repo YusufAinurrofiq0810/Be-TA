@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "Prisma.prisma",
+        "EditorConfig.EditorConfig",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+    ]
+}

@@ -1,0 +1,95 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { {{className}}Service } from '../services';
+import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
+import { ResponseEntity } from 'src/common/entities/response.entity';
+import { Create{{className}}Dto, Update{{className}}Dto } from '../dtos';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('{{className}}')
+@Controller({
+  path: '{{variableName}}',
+  version: '1',
+})
+export class {{className}}Controller {
+  constructor(private readonly {{variableName}}Service: {{className}}Service) {}
+
+  @Post()
+  public async create(@Body() create{{className}}Dto: Create{{className}}Dto) {
+    try {
+      const data = await this.{{variableName}}Service.create(create{{className}}Dto);
+      return new ResponseEntity({
+        data,
+        message: 'success',
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get()
+  public async index(@Query() paginateDto: PaginationQueryDto) {
+    try {
+      const data = await this.{{variableName}}Service.paginate(paginateDto);
+      return new ResponseEntity({
+        data,
+        message: 'success',
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Get(':id')
+  public async detail(@Param('id') id: string) {
+    try {
+      const data = await this.{{variableName}}Service.detail(id);
+
+      return new ResponseEntity({
+        data,
+        message: 'success',
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Delete(':id')
+  public async destroy(@Param('id') id: string) {
+    try {
+      const data = await this.{{variableName}}Service.destroy(id);
+      return new ResponseEntity({
+        data,
+        message: 'success',
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Put(':id')
+  public async update(
+    @Param('id') id: string,
+    @Body() update{{className}}Dto: Update{{className}}Dto,
+  ) {
+    try {
+      const data = await this.{{variableName}}Service.update(id, update{{className}}Dto);
+      return new ResponseEntity({
+        data,
+        message: 'success',
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+}
