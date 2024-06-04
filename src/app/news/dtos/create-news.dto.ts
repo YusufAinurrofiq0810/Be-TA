@@ -23,9 +23,8 @@ export class CreateNewsDto {
   @IsString()
   image: string;
 
-  @ApiProperty({ enum: Status_Berita})
+  @ApiProperty({ enum: Status_Berita })
   @IsNotEmpty()
   @IsEnum(Status_Berita)
   status: Status_Berita;
-
 }

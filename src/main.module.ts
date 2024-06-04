@@ -10,3 +10,5 @@ import { DatabaseModule } from './platform/database/database.module';
   exports: [DatabaseModule],
 })
 export class MainModule {}
+
+export { AppModule };
