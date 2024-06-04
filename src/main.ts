@@ -22,7 +22,7 @@ async function bootstrap() {
     credentials: true,
   });
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  await app.listen(3001);
 
   Logger.log(`Application is running on: ${await app.getUrl()}`);
 }
