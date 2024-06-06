@@ -4,6 +4,7 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { CreateUsersDto, UpdateUsersDto } from '../dtos';
 import { hashSync, verifySync } from '@node-rs/bcrypt';
 import { SignInDto } from 'src/app/auth/dtos';
+import { role } from '@prisma/client';
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UsersRepository) {}
@@ -34,7 +35,15 @@ export class UsersService {
 
   public async create(createUsersDto: CreateUsersDto) {
     try {
-      return this.userRepository.create(createUsersDto);
+      return this.userRepository.create({
+        email: createUsersDto.email,
+        password: createUsersDto.password,
+        fullName: createUsersDto.fullName,
+        username: createUsersDto.username,
+        phone: createUsersDto.phone,
+        alamat: createUsersDto.alamat,
+        role: role.User,
+      });
     } catch (error) {
       throw new Error(error);
     }

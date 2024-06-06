@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { error } from 'console';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { PaginatedEntity } from 'src/common/entities/paginated.entity';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PrismaService } from 'src/platform/database/services/prisma.service';
 
 type Filter = {
