@@ -4,6 +4,7 @@ import { ResponseEntity } from 'src/common/entities/response.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthModule } from './auth';
 import { NewsModule } from './news/news.module';
+import { CategoryModule } from './category';
 
 @ApiTags('App Spec')
 @Controller()
@@ -22,7 +23,7 @@ class AppController {
 }
 
 @Module({
-  imports: [UsersModule, AuthModule, NewsModule],
+  imports: [UsersModule, AuthModule, NewsModule, CategoryModule],
   controllers: [AppController],
 })
 export class AppModule {}

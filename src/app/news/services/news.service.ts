@@ -30,7 +30,7 @@ export class NewsService {
     }
   }
 
-  public async create(CreateNewsDto: CreateNewsDto){
+  public async create(CreateNewsDto: CreateNewsDto) {
     try {
       return this.newsRepository.create(CreateNewsDto);
     } catch (error) {
@@ -38,7 +38,7 @@ export class NewsService {
     }
   }
 
-  public async update(id: string, UpdateNewsDto: UpdateNewsDto){
+  public async update(id: string, UpdateNewsDto: UpdateNewsDto) {
     try {
       return this.newsRepository.update({ id }, UpdateNewsDto);
     } catch (error) {
