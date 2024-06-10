@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { PaginatedEntity } from 'src/common/entities/paginated.entity';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PrismaService } from 'src/platform/database/services/prisma.service';
 
 type Filter = {
   where?: Prisma.NewsWhereInput;
-  orderBy?: Prisma.NewsOrderByRelationAggregateInput;
+  orderBy?: Prisma.NewsOrderByWithRelationInput;
   cursor?: Prisma.NewsWhereUniqueInput;
   take?: number;
   skip?: number;
@@ -23,6 +24,7 @@ export class NewsRepository {
       this.PrismaService.news.findMany({
         skip: (+page - 1) * +limit,
         take: +limit,
+        where: { deletedAt: null, ...filter?.where },
         ...filter,
       }),
       this.PrismaService.news.count(),

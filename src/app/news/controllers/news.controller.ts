@@ -27,6 +27,8 @@ import { CreateNewsDto, UpdateNewsDto } from '../dtos';
 })
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
+  /* The `@Post()` decorator above the `create` method in the `NewsController` class is specifying that
+  this method should handle POST requests to the specified route. */
   @Post()
   public async create(@Body() CreateNewsDto: CreateNewsDto) {
     try {

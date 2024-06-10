@@ -1,1 +1,1 @@
-export * from './crowfouding.repository'
+export * from './crowfouding.repository';

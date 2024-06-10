@@ -11,21 +11,23 @@ export class CategoryService {
     return this.categoryRepository.paginate(paginateDto);
   }
 
-  public detail(id: string) {
+  public async detail(id: string) {
+    const newId: number = Number(id);
     try {
-      return this.categoryRepository.firtsOrThrow({
-        id,
-      });
+      const data = await this.categoryRepository.firtsOrThrow({ id: newId });
+      return data;
     } catch (error) {
       throw new Error(error);
     }
   }
 
   public async destroy(id: string) {
+    const categoryId: number = Number(id);
     try {
-      return this.categoryRepository.delete({
-        id,
+      const data = await this.categoryRepository.delete({
+        id: categoryId,
       });
+      return data;
     } catch (error) {
       throw new Error(error);
     }
@@ -34,16 +36,20 @@ export class CategoryService {
     try {
       return this.categoryRepository.create({
         name: CreateCategoryDto.Title,
-        description: '',
-        image: '',
+        description: CreateCategoryDto.content,
+        image: CreateCategoryDto.image,
       });
     } catch (error) {
       throw new Error(error);
     }
   }
   public async update(id: string, UpdateCategoryDto: UpdateCategoryDto) {
+    const categoryId: number = Number(id);
     try {
-      return this.categoryRepository.update({ id }, UpdateCategoryDto);
+      return this.categoryRepository.update(
+        { id: categoryId },
+        UpdateCategoryDto,
+      );
     } catch (error) {
       throw new Error(error.message);
     }

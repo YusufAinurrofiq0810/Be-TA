@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthModule } from './auth';
 import { NewsModule } from './news/news.module';
 import { CategoryModule } from './category';
+import { CrowdfoundingModule } from './crowdfounding';
 
 @ApiTags('App Spec')
 @Controller()
@@ -23,7 +24,13 @@ class AppController {
 }
 
 @Module({
-  imports: [UsersModule, AuthModule, NewsModule, CategoryModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    NewsModule,
+    CategoryModule,
+    CrowdfoundingModule,
+  ],
   controllers: [AppController],
 })
 export class AppModule {}

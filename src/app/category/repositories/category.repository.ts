@@ -25,6 +25,7 @@ export class CategoryRepository {
       this.PrismaService.category.findMany({
         skip: (+page - 1) * limit,
         take: +limit,
+        where: { deletedAt: null, ...filter?.where },
         ...filter,
       }),
       this.PrismaService.category.count(),

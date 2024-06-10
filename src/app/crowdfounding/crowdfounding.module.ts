@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CrowdfoundingController } from './controllers';
-import { CrowdfoundinService } from './services';
+import { CrowdfoundingService } from './services';
 import { CrowdfoundingRepository } from './repositories';
 
 @Module({
   controllers: [CrowdfoundingController],
-  providers: [CrowdfoundinService, CrowdfoundingRepository],
-  exports: [CrowdfoundinService, CrowdfoundingRepository],
+  providers: [CrowdfoundingService, CrowdfoundingRepository],
+  exports: [CrowdfoundingService, CrowdfoundingRepository],
 })
 export class CrowdfoundingModule {}
