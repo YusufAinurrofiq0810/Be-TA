@@ -6,6 +6,7 @@ import { AuthModule } from './auth';
 import { NewsModule } from './news/news.module';
 import { CategoryModule } from './category';
 import { CrowdfoundingModule } from './crowdfounding';
+import { DonateModule } from './donate/donate.module';
 
 @ApiTags('App Spec')
 @Controller()
@@ -30,6 +31,7 @@ class AppController {
     NewsModule,
     CategoryModule,
     CrowdfoundingModule,
+    DonateModule,
   ],
   controllers: [AppController],
 })

@@ -56,6 +56,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
+  xendit-node:
+    specifier: ^5.0.0
+    version: 5.0.0
 
 devDependencies:
   '@nestjs/cli':
@@ -6707,6 +6710,11 @@ packages:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
     dev: true
+
+  /xendit-node@5.0.0:
+    resolution: {integrity: sha512-/xRovF/ZA9vJ4DpxdjNvAyURvWRb2cROTAjNrqy7KSsMixxGsP+OaeBtUOnMJc98fvPNiESKSVz66b2iiDovIA==}
+    engines: {node: '>=18.0.0'}
+    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

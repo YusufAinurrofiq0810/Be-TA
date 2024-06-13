@@ -16,18 +16,19 @@ enum role {
 }
 
 model User {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   email    String
   username String
   fullName String
   password String
   phone    String
   alamat   String
-  role     role @default(User)
+  role     role   @default(User)
 
   deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Donation  Donation[]
 }
 
 enum Status_Berita {
@@ -46,9 +47,9 @@ model News {
   image            String
   status_Berita    Status_Berita
 
-  deletedAt     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Category {
@@ -68,16 +69,35 @@ enum Status {
 }
 
 model Crowdfounding {
-  id                     Int    @id @default(autoincrement())
+  id                     Int      @id @default(autoincrement())
   title                  String
   status_donasi          Status
   donation_target        String
   donation_collected     String
   donation_start_date    DateTime
   donation_finished_date DateTime
-  
-  deletedAt     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  News                   News[]
+
+  deletedAt DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  News      News[]
+  Donation  Donation[]
+}
+
+enum donate {
+  success
+  failed
+  pending
+}
+
+model Donation {
+  id               Int           @id @default(autoincrement())
+  user_id          String
+  user             User          @relation(fields: [user_id], references: [id])
+  crowdfounding    Crowdfounding @relation(fields: [crowdfounding_id], references: [id])
+  crowdfounding_id Int
+  amount           Float
+  message          String
+  xenditInvoiceId  String
+  status           donate
 }
