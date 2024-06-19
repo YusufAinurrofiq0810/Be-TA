@@ -12,5 +12,5 @@ export class CreateInvoiceDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  description: string;
+  description?: string;
 }

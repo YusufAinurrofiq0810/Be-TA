@@ -84,10 +84,10 @@ model Crowdfounding {
   Donation  Donation[]
 }
 
-enum donate {
-  success
-  failed
-  pending
+enum donatestatus {
+  SUCCESS
+  FAILED
+  PENDING
 }
 
 model Donation {
@@ -99,5 +99,5 @@ model Donation {
   amount           Float
   message          String
   xenditInvoiceId  String
-  status           donate
+  status           donatestatus
 }
