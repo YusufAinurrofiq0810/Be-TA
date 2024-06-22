@@ -23,6 +23,7 @@ export class CrowdfoundingRepository {
       this.PrismaService.crowdfounding.findMany({
         skip: (+page - 1) * +limit,
         take: +limit,
+        where: { deletedAt: null, ...filter?.where },
         ...filter,
       }),
       this.PrismaService.crowdfounding.count(),

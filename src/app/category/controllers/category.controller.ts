@@ -28,7 +28,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 })
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  @Post()
+  @Post(':create')
   public async create(@Body() CreateCategoryDto: CreateCategoryDto) {
     try {
       const data = await this.categoryService.create(CreateCategoryDto);
@@ -40,7 +40,7 @@ export class CategoryController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Get()
+  @Get('get')
   public async index(@Query() PaginationQueryDto: PaginationQueryDto) {
     try {
       const data = await this.categoryService.paginate(PaginationQueryDto);
@@ -52,7 +52,7 @@ export class CategoryController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Get(':id')
+  @Get('get/:id')
   public async detail(@Param('id') id: string) {
     try {
       const data = await this.categoryService.detail(id);
@@ -64,7 +64,7 @@ export class CategoryController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Delete(':id')
+  @Delete('delete/:id')
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.categoryService.destroy(id);
@@ -76,7 +76,7 @@ export class CategoryController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Put(':id')
+  @Put('updaet/:id')
   public async update(
     @Param('id') id: string,
     @Body() UpdateCategoryDto: UpdateCategoryDto,
