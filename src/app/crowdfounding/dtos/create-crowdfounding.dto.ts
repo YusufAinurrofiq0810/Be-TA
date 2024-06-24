@@ -1,30 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Status } from '@prisma/client';
+import { status } from '@prisma/client';
 import { IsDateString, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCrowdfoundingDto {
   @ApiProperty()
   @IsString()
-  Title: string;
+  title: string;
 
-  @ApiProperty({ enum: Status })
+  @ApiProperty({ enum: status })
   @IsNotEmpty()
-  @IsEnum(Status)
-  Status: Status;
+  @IsEnum(status)
+  status: status;
 
   @ApiProperty()
   @IsString()
-  Donation_Target: string;
+  donationTarget: string;
 
   @ApiProperty()
   @IsString()
-  Donation_Collected: string;
+  donationCollected: string;
 
   @ApiProperty()
   @IsDateString()
-  Donation_Start_Date: Date;
+  donationStartDate: Date;
 
   @ApiProperty()
   @IsString()
-  Donation_Finished_Date: Date;
+  donationFinishedDate: Date;
 }

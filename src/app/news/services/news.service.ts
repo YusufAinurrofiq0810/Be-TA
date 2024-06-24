@@ -15,10 +15,9 @@ export class NewsService {
   }
 
   public detail(id: string) {
-    const newId: number = Number(id);
     try {
       return this.newsRepository.firtsOrThrow({
-        id: newId,
+        id,
       });
     } catch (error) {
       throw new Error(error);
@@ -26,10 +25,9 @@ export class NewsService {
   }
 
   public async destroy(id: string) {
-    const newId: number = Number(id);
     try {
       return this.newsRepository.delete({
-        id: newId,
+        id,
       });
     } catch (error) {
       throw new Error(error);
@@ -38,10 +36,10 @@ export class NewsService {
 
   public async create(CreateNewsDto: CreateNewsDto) {
     const crowdfounding = await this.prismaService.crowdfounding.findUnique({
-      where: { id: CreateNewsDto.crowdfounding_id },
+      where: { id: CreateNewsDto.crowdfoundingId },
     });
     const category = await this.prismaService.category.findUnique({
-      where: { id: CreateNewsDto.category_id },
+      where: { id: CreateNewsDto.categoryId },
     });
 
     if (!crowdfounding) {
@@ -62,7 +60,7 @@ export class NewsService {
         },
         content: CreateNewsDto.content,
         image: CreateNewsDto.image,
-        status_Berita: CreateNewsDto.status_berita,
+        statusBerita: CreateNewsDto.statusBerita,
       });
     } catch (error) {
       throw new Error(error);
@@ -70,9 +68,8 @@ export class NewsService {
   }
 
   public async update(id: string, UpdateNewsDto: UpdateNewsDto) {
-    const newId: number = Number(id);
     try {
-      return this.newsRepository.update({ id: newId }, UpdateNewsDto);
+      return this.newsRepository.update({ id }, UpdateNewsDto);
     } catch (error) {
       throw new Error(error.message);
     }

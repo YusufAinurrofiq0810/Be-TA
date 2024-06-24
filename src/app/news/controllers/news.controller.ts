@@ -29,7 +29,7 @@ export class NewsController {
   constructor(private readonly newsService: NewsService) {}
   /* The `@Post()` decorator above the `create` method in the `NewsController` class is specifying that
   this method should handle POST requests to the specified route. */
-  @Post(':create')
+  @Post('create')
   public async create(@Body() CreateNewsDto: CreateNewsDto) {
     try {
       const data = await this.newsService.create(CreateNewsDto);

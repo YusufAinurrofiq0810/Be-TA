@@ -3,6 +3,8 @@ import {
   Controller,
   HttpException,
   HttpStatus,
+  // HttpException,
+  // HttpStatus,
   Post,
   Res,
   UseGuards,
@@ -12,20 +14,29 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
 import { CreateInvoiceDto } from '../dtos/create-invoice.dtos';
 import { Response } from 'express';
+// import { ResponseEntity } from 'src/common/entities/response.entity';
+import { CreateDonateDto } from '../dtos';
+import { User } from 'src/app/auth/decorators';
 
 @ApiTags('Donate')
 @ApiSecurity('JWT')
-@UseGuards(AuthGuard)
 @Controller({
   path: 'donate',
-  version: 1,
+  version: '1',
 })
 export class DonateController {
   constructor(private readonly donateService: DonateService) {}
   @Post('create-invoice')
-  async createInvoice(@Body() body: CreateInvoiceDto, @Res() res: Response) {
+  @UseGuards(AuthGuard)
+  async createInvoice(
+    @Body() body: CreateInvoiceDto,
+    @Res() res: Response,
+    @User() user: { id: string },
+  ) {
     try {
-      const result = await this.donateService.createInvoice(body);
+      console.log(user);
+      const result = await this.donateService.createInvoice(body, user.id);
+
       console.log(result.invoiceUrl);
 
       res.status(200).redirect(result.invoiceUrl);
@@ -33,16 +44,13 @@ export class DonateController {
       throw new Error(error.message);
     }
   }
-  @Post('handle-callback')
-  async handleXenditCallback(@Body() Body: any) {
+  @Post('invoice-webhook')
+  async invoicewebhook(@Body() Body: CreateDonateDto) {
     try {
-      const result = await this.donateService.handleXenditCallback(Body);
-      return { InvoiceStatus: 'success', result };
+      const data = await this.donateService.invoicewebhook(Body);
+      console.log(data);
     } catch (error) {
-      throw new HttpException(
-        'Callback processing failed',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

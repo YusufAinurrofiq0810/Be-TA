@@ -28,7 +28,7 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 })
 export class CrowdfoundingController {
   constructor(private readonly crowdfoundingService: CrowdfoundingService) {}
-  @Post(':create')
+  @Post('create')
   public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
     try {
       const data = await this.crowdfoundingService.create(
@@ -96,15 +96,15 @@ export class CrowdfoundingController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Get('export')
-  public async export() {
-    try {
-      return new ResponseEntity({
-        data: await this.crowdfoundingService.export(),
-        message: 'success',
-      });
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
+  // @Get('export')
+  // public async export() {
+  //   try {
+  //     return new ResponseEntity({
+  //       data: await this.crowdfoundingService.export(),
+  //       message: 'success',
+  //     });
+  //   } catch (error) {
+  //     throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 }

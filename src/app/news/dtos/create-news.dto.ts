@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Status_Berita } from '@prisma/client';
+import { statusberita } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateNewsDto {
@@ -9,11 +9,11 @@ export class CreateNewsDto {
 
   @ApiProperty()
   @IsNumber()
-  crowdfounding_id: number;
+  crowdfoundingId: string;
 
   @ApiProperty()
   @IsNumber()
-  category_id: number;
+  categoryId: string;
 
   @ApiProperty()
   @IsString()
@@ -23,8 +23,8 @@ export class CreateNewsDto {
   @IsString()
   image: string;
 
-  @ApiProperty({ enum: Status_Berita })
+  @ApiProperty({ enum: statusberita })
   @IsNotEmpty()
-  @IsEnum(Status_Berita)
-  status_berita: Status_Berita;
+  @IsEnum(statusberita)
+  statusBerita: statusberita;
 }

@@ -12,9 +12,8 @@ export class CategoryService {
   }
 
   public async detail(id: string) {
-    const newId: number = Number(id);
     try {
-      const data = await this.categoryRepository.firtsOrThrow({ id: newId });
+      const data = await this.categoryRepository.firtsOrThrow({ id });
       return data;
     } catch (error) {
       throw new Error(error);
@@ -22,10 +21,9 @@ export class CategoryService {
   }
 
   public async destroy(id: string) {
-    const categoryId: number = Number(id);
     try {
       const data = await this.categoryRepository.delete({
-        id: categoryId,
+        id,
       });
       return data;
     } catch (error) {
@@ -35,7 +33,7 @@ export class CategoryService {
   public async create(CreateCategoryDto: CreateCategoryDto) {
     try {
       return this.categoryRepository.create({
-        name: CreateCategoryDto.Title,
+        name: CreateCategoryDto.title,
         description: CreateCategoryDto.content,
         image: CreateCategoryDto.image,
       });
@@ -44,12 +42,8 @@ export class CategoryService {
     }
   }
   public async update(id: string, UpdateCategoryDto: UpdateCategoryDto) {
-    const categoryId: number = Number(id);
     try {
-      return this.categoryRepository.update(
-        { id: categoryId },
-        UpdateCategoryDto,
-      );
+      return this.categoryRepository.update({ id }, UpdateCategoryDto);
     } catch (error) {
       throw new Error(error.message);
     }

@@ -11,7 +11,7 @@ import {
 export class CreateUsersDto {
   @ApiProperty()
   @IsString()
-  fullName: string;
+  fullname: string;
 
   @ApiProperty()
   @IsNotEmpty()
