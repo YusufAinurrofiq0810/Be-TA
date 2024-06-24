@@ -1,6 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreateCrowdfoundingDto } from './create-crowdfounding.dto';
 
 export class UpdateCrowdfoundingDto extends PartialType(
-  CreateCrowdfoundingDto,
+  OmitType(CreateCrowdfoundingDto, ['donationCollected'] as const),
 ) {}

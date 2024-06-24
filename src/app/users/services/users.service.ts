@@ -38,7 +38,7 @@ export class UsersService {
       return this.userRepository.create({
         email: createUsersDto.email,
         password: createUsersDto.password,
-        fullName: createUsersDto.fullName,
+        fullname: createUsersDto.fullname,
         username: createUsersDto.username,
         phone: createUsersDto.phone,
         alamat: createUsersDto.alamat,

@@ -52,7 +52,7 @@ export class DonateService {
       }
       console.log(createDonateDto);
 
-      await this.prismaService.donation.update({
+      const donation = await this.prismaService.donation.update({
         where: {
           id: createDonateDto.external_id,
         },
@@ -60,6 +60,18 @@ export class DonateService {
           status: 'SUCCESS',
         },
       });
+
+      const crowdFounding = await this.prismaService.crowdfounding.findFirst({
+        where: { id: donation.crowdfoundingId },
+      });
+
+      await this.prismaService.crowdfounding.update({
+        where: { id: crowdFounding.id },
+        data: {
+          donationCollected: `${crowdFounding.donationCollected + createDonateDto.amount}`,
+        },
+      });
+      console.log(crowdFounding);
     } catch (error) {
       throw new Error(error.message);
     }
