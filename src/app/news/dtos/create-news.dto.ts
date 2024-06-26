@@ -8,11 +8,11 @@ export class CreateNewsDto {
   title: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   crowdfoundingId: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   categoryId: string;
 
   @ApiProperty()

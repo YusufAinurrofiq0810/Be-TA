@@ -76,7 +76,7 @@ export class CategoryController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Put('updaet/:id')
+  @Put('update/:id')
   public async update(
     @Param('id') id: string,
     @Body() UpdateCategoryDto: UpdateCategoryDto,
