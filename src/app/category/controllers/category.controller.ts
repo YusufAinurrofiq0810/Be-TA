@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -19,9 +20,10 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
+import { RolesGuard } from 'src/app/auth/guards/roles.guard';
+import { role } from '@prisma/client';
 @ApiTags('Admin')
 @ApiSecurity('JWT')
-@UseGuards(AuthGuard)
 @Controller({
   path: 'category',
   version: '1',
@@ -29,6 +31,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @Post(':create')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async create(@Body() CreateCategoryDto: CreateCategoryDto) {
     try {
       const data = await this.categoryService.create(CreateCategoryDto);
@@ -41,6 +44,7 @@ export class CategoryController {
     }
   }
   @Get('get')
+  @UseGuards(AuthGuard)
   public async index(@Query() PaginationQueryDto: PaginationQueryDto) {
     try {
       const data = await this.categoryService.paginate(PaginationQueryDto);
@@ -53,6 +57,7 @@ export class CategoryController {
     }
   }
   @Get('get/:id')
+  @UseGuards(AuthGuard)
   public async detail(@Param('id') id: string) {
     try {
       const data = await this.categoryService.detail(id);
@@ -65,6 +70,7 @@ export class CategoryController {
     }
   }
   @Delete('delete/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.categoryService.destroy(id);
@@ -77,6 +83,7 @@ export class CategoryController {
     }
   }
   @Put('update/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async update(
     @Param('id') id: string,
     @Body() UpdateCategoryDto: UpdateCategoryDto,

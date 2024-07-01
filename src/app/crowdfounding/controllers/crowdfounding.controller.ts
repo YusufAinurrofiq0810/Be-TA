@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -18,10 +19,11 @@ import { AuthGuard } from 'src/app/auth';
 import { CreateCrowdfoundingDto, UpdateCrowdfoundingDto } from '../dtos';
 import { ResponseEntity } from 'src/common/entities/response.entity';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
+import { RolesGuard } from 'src/app/auth/guards/roles.guard';
+import { role } from '@prisma/client';
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
-@UseGuards(AuthGuard)
 @Controller({
   path: 'crowdfounding',
   version: '1',
@@ -29,6 +31,7 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 export class CrowdfoundingController {
   constructor(private readonly crowdfoundingService: CrowdfoundingService) {}
   @Post('create')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
     try {
       const data = await this.crowdfoundingService.create(
@@ -43,6 +46,7 @@ export class CrowdfoundingController {
     }
   }
   @Get('get')
+  @UseGuards(AuthGuard)
   public async index(@Query() PaginationDto: PaginationQueryDto) {
     try {
       const data = await this.crowdfoundingService.paginate(PaginationDto);
@@ -55,6 +59,7 @@ export class CrowdfoundingController {
     }
   }
   @Get('get/:id')
+  @UseGuards(AuthGuard)
   public async detail(@Param('id') id: string) {
     try {
       const data = await this.crowdfoundingService.detail(id);
@@ -67,6 +72,7 @@ export class CrowdfoundingController {
     }
   }
   @Delete('delete/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.crowdfoundingService.destroy(id);
@@ -79,6 +85,7 @@ export class CrowdfoundingController {
     }
   }
   @Put('update/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async update(
     @Param('id') id: string,
     @Body() UpdateCrowfoundingDto: UpdateCrowdfoundingDto,

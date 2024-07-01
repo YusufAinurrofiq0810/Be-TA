@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/app/users/services';
 import { SignInDto } from '../dtos/sign-in.dto';
