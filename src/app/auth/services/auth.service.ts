@@ -20,7 +20,7 @@ export class AuthService {
     const token = this.jwtService.sign({
       email: user.email,
       id: user.id,
-      name: user.fullName,
+      name: user.fullname,
     });
 
     delete user.password;
@@ -38,7 +38,7 @@ export class AuthService {
     const token = this.jwtService.sign({
       email: user.email,
       id: user.id,
-      name: user.fullName,
+      name: user.fullname,
     });
     return {
       token,
