@@ -1,2 +1,2 @@
-export * from './create-News.dto';
-export * from './update-News.dto';
+export * from './create-news.dto';
+export * from './update-news.dto';
