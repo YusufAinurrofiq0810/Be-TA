@@ -28,7 +28,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 })
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  @Post(':create')
+  @Post('create')
   public async create(@Body() CreateCategoryDto: CreateCategoryDto) {
     try {
       const data = await this.categoryService.create(CreateCategoryDto);
