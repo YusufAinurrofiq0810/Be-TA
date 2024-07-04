@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -17,6 +18,7 @@ import { Response } from 'express';
 // import { ResponseEntity } from 'src/common/entities/response.entity';
 import { CreateDonateDto } from '../dtos';
 import { User } from 'src/app/auth/decorators';
+import { Public } from 'src/app/auth/decorators/public.decorator';
 
 @ApiTags('Donate')
 @ApiSecurity('JWT')
@@ -27,7 +29,8 @@ import { User } from 'src/app/auth/decorators';
 export class DonateController {
   constructor(private readonly donateService: DonateService) {}
   @Post('create-invoice')
-  @UseGuards(AuthGuard)
+  @Public()
+  // @UseGuards(AuthGuard)
   async createInvoice(
     @Body() body: CreateInvoiceDto,
     @Res() res: Response,
@@ -44,7 +47,7 @@ export class DonateController {
       throw new Error(error.message);
     }
   }
-  @Post('invoice-webhook')
+  @Post('invoice-webhook')  
   async invoicewebhook(@Body() Body: CreateDonateDto) {
     try {
       const data = await this.donateService.invoicewebhook(Body);

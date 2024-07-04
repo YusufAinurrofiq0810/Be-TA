@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -18,9 +19,10 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateNewsDto, UpdateNewsDto } from '../dtos';
+import { role } from '@prisma/client';
+import { RolesGuard } from 'src/app/auth/guards/roles.guard';
 @ApiTags('Admin')
 @ApiSecurity('JWT')
-@UseGuards(AuthGuard)
 @Controller({
   path: 'news',
   version: '1',
@@ -30,6 +32,7 @@ export class NewsController {
   /* The `@Post()` decorator above the `create` method in the `NewsController` class is specifying that
   this method should handle POST requests to the specified route. */
   @Post('create')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async create(@Body() CreateNewsDto: CreateNewsDto) {
     try {
       const data = await this.newsService.create(CreateNewsDto);
@@ -42,6 +45,7 @@ export class NewsController {
     }
   }
   @Get('get')
+  @UseGuards(AuthGuard)
   public async index(@Query() PaginationDto: PaginationQueryDto) {
     try {
       const data = await this.newsService.paginate(PaginationDto);
@@ -54,6 +58,7 @@ export class NewsController {
     }
   }
   @Get('get/:id')
+  @UseGuards(AuthGuard)
   public async detail(@Param('id') id: string) {
     try {
       const data = await this.newsService.detail(id);
@@ -66,6 +71,7 @@ export class NewsController {
     }
   }
   @Delete('delete/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.newsService.destroy(id);
@@ -78,6 +84,7 @@ export class NewsController {
     }
   }
   @Put('update/:id')
+  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async update(
     @Param('id') id: string,
     @Body() UpdateNewsDto: UpdateNewsDto,
