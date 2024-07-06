@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -21,6 +20,8 @@ import { ResponseEntity } from 'src/common/entities/response.entity';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
 import { role } from '@prisma/client';
+import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
+import { Roles } from 'src/app/role/decorators/role.decorator';
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
@@ -29,7 +30,7 @@ import { role } from '@prisma/client';
   version: '1',
 })
 export class CrowdfoundingController {
-  constructor(private readonly crowdfoundingService: CrowdfoundingService) {}
+  constructor(private readonly crowdfoundingService: CrowdfoundingService) { }
   @Post('create')
   @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
   public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
@@ -102,6 +103,12 @@ export class CrowdfoundingController {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Roles('Admin')
+  @Post('withdraw/:id')
+  async withdraw(@Param('id') id: string, @Body() body: wihtdrawCrowdfounding) {
+    return await this.crowdfoundingService.withdraw(id, body)
   }
   // @Get('export')
   // public async export() {

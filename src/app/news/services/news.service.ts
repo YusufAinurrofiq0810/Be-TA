@@ -8,7 +8,7 @@ export class NewsService {
   constructor(
     private readonly newsRepository: NewsRepository,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   public paginate(paginateDto: PaginationQueryDto) {
     return this.newsRepository.paginate(paginateDto);
@@ -34,7 +34,7 @@ export class NewsService {
     }
   }
 
-  public async create(CreateNewsDto: CreateNewsDto) {
+  public async create(CreateNewsDto: CreateNewsDto, image: string) {
     const crowdfounding = await this.prismaService.crowdfounding.findUnique({
       where: { id: CreateNewsDto.crowdfoundingId },
     });
@@ -63,6 +63,7 @@ export class NewsService {
         statusBerita: CreateNewsDto.statusBerita,
       });
     } catch (error) {
+      console.log(error)
       throw new Error(error);
     }
   }

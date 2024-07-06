@@ -24,6 +24,7 @@ export class NewsRepository {
       this.PrismaService.news.findMany({
         skip: (+page - 1) * +limit,
         take: +limit,
+        include: { category: true, crowdfounding: true },
         where: { deletedAt: null, ...filter?.where },
         ...filter,
       }),

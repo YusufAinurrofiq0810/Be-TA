@@ -20,7 +20,6 @@ export class CreateNewsDto {
   content: string;
 
   @ApiProperty()
-  @IsString()
   image: string;
 
   @ApiProperty({ enum: statusberita })

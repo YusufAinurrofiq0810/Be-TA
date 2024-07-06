@@ -22,6 +22,7 @@ export class AuthService {
       email: user.email,
       id: user.id,
       name: user.fullname,
+      role: user.role
     });
 
     delete user.password;

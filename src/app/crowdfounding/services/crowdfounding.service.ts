@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CrowdfoundingRepository } from '../repositories';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { CreateCrowdfoundingDto, UpdateCrowdfoundingDto } from '../dtos';
+import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
+import { Crowdfounding } from '@prisma/client';
 // import { Response } from 'express';
 // import * as ExcelJS from 'exceljs';
 
@@ -60,6 +62,20 @@ export class CrowdfoundingService {
     }
   }
 
+  async withdraw(id: string,body: wihtdrawCrowdfounding) { 
+    const {amount} = body;
+    const crowdfounding: Crowdfounding = await this.crowdfoundingRepository.firtsOrThrow({id});
+
+    if(!crowdfounding) throw new NotFoundException('Crowd Founding tidak ditemukan')
+    if(+crowdfounding.donationCollected < amount) throw new BadRequestException(`Tidak bisa menarik donasi dengan sejumlah ${amount}. Donasi terkumpul ${crowdfounding.donationCollected}`)
+
+    await this.crowdfoundingRepository.update({id}, {donationCollected: `${+crowdfounding.donationCollected - amount}`})
+
+    return {message: `success withdraw ${amount}`}
+  }
+
+  // p
+  
   // async exportexcel(response: Response) {
   //   const workbook = new ExcelJS.Workbook();
   //   const worksheet = workbook.addWorksheet('Sample Data');

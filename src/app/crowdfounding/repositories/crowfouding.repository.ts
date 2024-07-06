@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Crowdfounding, Prisma } from '@prisma/client';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { PaginatedEntity } from 'src/common/entities/paginated.entity';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,6 +50,18 @@ export class CrowdfoundingRepository {
     return this.PrismaService.crowdfounding.update({
       where,
       data: { deletedAt: new Date() },
+    });
+  }
+
+  // public async findById(id: string): Promise<Crowdfounding | null>{
+  //   return this.PrismaService.crowdfounding.findUnique({
+  //     where: {id},
+  //   });
+  // }
+  public async updatedonationcollected(id:string, newAmount: string): Promise<Crowdfounding> {
+    return this.PrismaService.crowdfounding.update({
+      where: {id},
+      data: { donationCollected: newAmount }
     });
   }
 
