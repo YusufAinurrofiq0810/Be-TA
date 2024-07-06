@@ -4,8 +4,6 @@ import {
   Controller,
   HttpException,
   HttpStatus,
-  // HttpException,
-  // HttpStatus,
   Post,
   Res,
   UseGuards,
@@ -15,7 +13,6 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
 import { CreateInvoiceDto } from '../dtos/create-invoice.dtos';
 import { Response } from 'express';
-// import { ResponseEntity } from 'src/common/entities/response.entity';
 import { CreateDonateDto } from '../dtos';
 import { User } from 'src/app/auth/decorators';
 import { Public } from 'src/app/auth/decorators/public.decorator';
@@ -28,6 +25,7 @@ import { Public } from 'src/app/auth/decorators/public.decorator';
 })
 export class DonateController {
   constructor(private readonly donateService: DonateService) {}
+
   @Post('create-invoice')
   @Public()
   // @UseGuards(AuthGuard)
@@ -42,9 +40,10 @@ export class DonateController {
 
       console.log(result.invoiceUrl);
 
-      res.status(200).redirect(result.invoiceUrl);
+      // Instead of redirecting, send the invoice URL in the response
+      res.status(200).json({ invoiceUrl: result.invoiceUrl });
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   @Post('invoice-webhook')  

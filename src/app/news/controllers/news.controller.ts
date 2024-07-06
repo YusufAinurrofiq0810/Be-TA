@@ -10,31 +10,48 @@ import {
   Put,
   Query,
   UseGuards,
+
+  UseInterceptors,
+  UploadedFile,
+
 } from '@nestjs/common';
-import { NewsService } from '../services';
+import { NewsService } from '../services/news.service';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { ResponseEntity } from 'src/common/entities/response.entity';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateNewsDto, UpdateNewsDto } from '../dtos';
-import { role } from '@prisma/client';
-import { RolesGuard } from 'src/app/auth/guards/roles.guard';
+
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/config/multer.config';
+import { Express } from 'express';
+
+
 @ApiTags('Admin')
 @ApiSecurity('JWT')
+@UseGuards(AuthGuard)
 @Controller({
   path: 'news',
   version: '1',
 })
 export class NewsController {
-  constructor(private readonly newsService: NewsService) { }
-  /* The `@Post()` decorator above the `create` method in the `NewsController` class is specifying that
-  this method should handle POST requests to the specified route. */
-  @Post('create')
-  @UseGuards(AuthGuard, RolesGuard)
-  public async create(@Body() createNewsDto: CreateNewsDto) {
+
+  constructor(private readonly newsService: NewsService) {}
+
+  @Post()
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  public async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createNewsDto: CreateNewsDto,
+  ) {
     try {
-      const data = await this.newsService.create(createNewsDto, 'image');
+      if (file) {
+        createNewsDto.image = file.path; // Atur sesuai dengan cara kamu menyimpan file
+      }
+
+      const data = await this.newsService.create(createNewsDto);
+
       return new ResponseEntity({
         data,
         message: 'success',
@@ -43,21 +60,21 @@ export class NewsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Get('get')
-  @UseGuards(AuthGuard)
+
+  @Get()
   public async index(@Query() PaginationDto: PaginationQueryDto) {
     try {
       const data = await this.newsService.paginate(PaginationDto);
       return new ResponseEntity({
         data,
-        message: 'succes',
+        message: 'success',
       });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Get('get/:id')
-  @UseGuards(AuthGuard)
+
+  @Get(':id')
   public async detail(@Param('id') id: string) {
     try {
       const data = await this.newsService.detail(id);
@@ -69,8 +86,10 @@ export class NewsController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Delete('delete/:id')
-  @UseGuards(AuthGuard, RolesGuard)
+
+
+  @Delete(':id')
+
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.newsService.destroy(id);
@@ -82,14 +101,16 @@ export class NewsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Put('update/:id')
-  @UseGuards(AuthGuard, RolesGuard)
+
+
+  @Put(':id')
+
   public async update(
     @Param('id') id: string,
-    @Body() UpdateNewsDto: UpdateNewsDto,
+    @Body() updateNewsDto: UpdateNewsDto,
   ) {
     try {
-      const data = await this.newsService.update(id, UpdateNewsDto);
+      const data = await this.newsService.update(id, updateNewsDto);
       return new ResponseEntity({
         data,
         message: 'success',
