@@ -47,7 +47,7 @@ export class NewsService {
     }
 
     if (!category) {
-      throw new Error('CategoryNot found');
+      throw new Error('Category Not found');
     }
     try {
       return this.newsRepository.create({

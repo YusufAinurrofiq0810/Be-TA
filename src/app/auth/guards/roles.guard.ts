@@ -1,16 +1,15 @@
-/* eslint-disable prettier/prettier */
 import {
-    CanActivate,
-    ExecutionContext,
-    Injectable,
-    ForbiddenException,
-  } from '@nestjs/common';
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 // import { role } from '@prisma/client';
-  
-  @Injectable()
+
+@Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
     const allowedRoles = this.reflector.get<string[]>('roles', context.getHandler());
@@ -18,7 +17,7 @@ export class RolesGuard implements CanActivate {
     if (!allowedRoles) {
       return true;
     }
-    
+
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
@@ -36,4 +35,3 @@ export class RolesGuard implements CanActivate {
   }
 }
 
-  
