@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { statusberita } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreateNewsDto {
   @ApiProperty()
@@ -20,6 +20,8 @@ export class CreateNewsDto {
   content: string;
 
   @ApiProperty()
+  @IsOptional()
+  @IsString()
   image: string;
 
   @ApiProperty({ enum: statusberita })

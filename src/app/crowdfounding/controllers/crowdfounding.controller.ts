@@ -20,6 +20,7 @@ import { ResponseEntity } from 'src/common/entities/response.entity';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
 import { Roles } from 'src/app/auth/decorators/roles.decorator';
+import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
@@ -28,8 +29,8 @@ import { Roles } from 'src/app/auth/decorators/roles.decorator';
   version: '1',
 })
 export class CrowdfoundingController {
-  constructor(private readonly crowdfoundingService: CrowdfoundingService) { }
-  @Post('create')
+  constructor(private readonly crowdfoundingService: CrowdfoundingService) {}
+  @Post()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
   public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
@@ -45,7 +46,7 @@ export class CrowdfoundingController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Get('get')
+  @Get()
   @UseGuards(AuthGuard)
   public async index(@Query() PaginationDto: PaginationQueryDto) {
     try {
@@ -58,7 +59,7 @@ export class CrowdfoundingController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Get('get/:id')
+  @Get(':id')
   @UseGuards(AuthGuard)
   public async detail(@Param('id') id: string) {
     try {
@@ -71,7 +72,7 @@ export class CrowdfoundingController {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
-  @Delete('delete/:id')
+  @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
   public async destroy(@Param('id') id: string) {
@@ -85,7 +86,7 @@ export class CrowdfoundingController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  @Put('update/:id')
+  @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
   public async update(
@@ -109,7 +110,7 @@ export class CrowdfoundingController {
   @Roles('Admin')
   @Post('withdraw/:id')
   async withdraw(@Param('id') id: string, @Body() body: wihtdrawCrowdfounding) {
-    return await this.crowdfoundingService.withdraw(id, body)
+    return await this.crowdfoundingService.withdraw(id, body);
   }
   // @Get('export')
   // public async export() {
