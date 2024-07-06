@@ -10,18 +10,23 @@ import {
   Put,
   Query,
   UseGuards,
+
   UseInterceptors,
   UploadedFile,
+
 } from '@nestjs/common';
 import { NewsService } from '../services/news.service';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { ResponseEntity } from 'src/common/entities/response.entity';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateNewsDto, UpdateNewsDto } from '../dtos';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/config/multer.config';
 import { Express } from 'express';
+
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
@@ -31,6 +36,7 @@ import { Express } from 'express';
   version: '1',
 })
 export class NewsController {
+
   constructor(private readonly newsService: NewsService) {}
 
   @Post()
@@ -45,6 +51,7 @@ export class NewsController {
       }
 
       const data = await this.newsService.create(createNewsDto);
+
       return new ResponseEntity({
         data,
         message: 'success',
@@ -80,7 +87,9 @@ export class NewsController {
     }
   }
 
+
   @Delete(':id')
+
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.newsService.destroy(id);
@@ -93,7 +102,9 @@ export class NewsController {
     }
   }
 
+
   @Put(':id')
+
   public async update(
     @Param('id') id: string,
     @Body() updateNewsDto: UpdateNewsDto,

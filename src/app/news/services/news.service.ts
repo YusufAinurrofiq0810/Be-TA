@@ -31,7 +31,9 @@ export class NewsService {
     }
   }
 
+
   public async create(createNewsDto: CreateNewsDto) {
+
     try {
       const crowdfounding = await this.prismaService.crowdfounding.findUnique({
         where: { id: createNewsDto.crowdfoundingId },
