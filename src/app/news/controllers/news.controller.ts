@@ -19,7 +19,6 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { ResponseEntity } from 'src/common/entities/response.entity';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/app/auth';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateNewsDto, UpdateNewsDto } from '../dtos';
 import { diskStorage } from 'multer'
 import { role } from '@prisma/client';
@@ -125,7 +124,8 @@ export class NewsController {
     }
   }
   @Delete('delete/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.newsService.destroy(id);
@@ -138,7 +138,8 @@ export class NewsController {
     }
   }
   @Put('update/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async update(
     @Param('id') id: string,
     @Body() UpdateNewsDto: UpdateNewsDto,

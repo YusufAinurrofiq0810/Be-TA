@@ -22,6 +22,7 @@ import { AuthGuard } from 'src/app/auth';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
 import { role } from '@prisma/client';
+import { Roles } from 'src/app/auth/decorators/roles.decorator';
 @ApiTags('Admin')
 @ApiSecurity('JWT')
 @Controller({
@@ -31,7 +32,8 @@ import { role } from '@prisma/client';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @Post(':create')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async create(@Body() CreateCategoryDto: CreateCategoryDto) {
     try {
       const data = await this.categoryService.create(CreateCategoryDto);
@@ -70,7 +72,8 @@ export class CategoryController {
     }
   }
   @Delete('delete/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.categoryService.destroy(id);
@@ -83,7 +86,8 @@ export class CategoryController {
     }
   }
   @Put('update/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async update(
     @Param('id') id: string,
     @Body() UpdateCategoryDto: UpdateCategoryDto,

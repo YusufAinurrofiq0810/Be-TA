@@ -19,9 +19,7 @@ import { CreateCrowdfoundingDto, UpdateCrowdfoundingDto } from '../dtos';
 import { ResponseEntity } from 'src/common/entities/response.entity';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
-import { role } from '@prisma/client';
-import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
-import { Roles } from 'src/app/role/decorators/role.decorator';
+import { Roles } from 'src/app/auth/decorators/roles.decorator';
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
@@ -32,7 +30,8 @@ import { Roles } from 'src/app/role/decorators/role.decorator';
 export class CrowdfoundingController {
   constructor(private readonly crowdfoundingService: CrowdfoundingService) { }
   @Post('create')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
     try {
       const data = await this.crowdfoundingService.create(
@@ -73,7 +72,8 @@ export class CrowdfoundingController {
     }
   }
   @Delete('delete/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async destroy(@Param('id') id: string) {
     try {
       const data = await this.crowdfoundingService.destroy(id);
@@ -86,7 +86,8 @@ export class CrowdfoundingController {
     }
   }
   @Put('update/:id')
-  @UseGuards(AuthGuard, new RolesGuard([role.Admin]))
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   public async update(
     @Param('id') id: string,
     @Body() UpdateCrowfoundingDto: UpdateCrowdfoundingDto,

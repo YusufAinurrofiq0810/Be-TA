@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signIn(signInDto: SignInDto): Promise<{
     token: string;
@@ -22,7 +22,6 @@ export class AuthService {
       email: user.email,
       id: user.id,
       name: user.fullname,
-      role: user.role
     });
 
     delete user.password;
@@ -41,6 +40,7 @@ export class AuthService {
       email: user.email,
       id: user.id,
       name: user.fullname,
+      role: user.role,
     });
     return {
       token,
