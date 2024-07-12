@@ -5,7 +5,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(private readonly categoryRepository: CategoryRepository) { }
 
   public paginate(paginateDto: PaginationQueryDto) {
     return this.categoryRepository.paginate(paginateDto);
@@ -35,15 +35,14 @@ export class CategoryService {
       return this.categoryRepository.create({
         name: CreateCategoryDto.title,
         description: CreateCategoryDto.content,
-        image: CreateCategoryDto.image,
       });
     } catch (error) {
       throw new Error(error);
     }
   }
-  public async update(id: string, UpdateCategoryDto: UpdateCategoryDto) {
+  public async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     try {
-      return this.categoryRepository.update({ id }, UpdateCategoryDto);
+      return this.categoryRepository.update({ id }, updateCategoryDto);
     } catch (error) {
       throw new Error(error.message);
     }

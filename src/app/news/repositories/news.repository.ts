@@ -15,7 +15,7 @@ type Filter = {
 
 @Injectable()
 export class NewsRepository {
-  constructor(private readonly PrismaService: PrismaService) {}
+  constructor(private readonly PrismaService: PrismaService) { }
 
   public async paginate(paginateDto: PaginationQueryDto, filter?: Filter) {
     const { limit = 10, page = 1 } = paginateDto;
@@ -59,7 +59,17 @@ export class NewsRepository {
     where: Partial<Prisma.NewsWhereUniqueInput>,
     select?: Prisma.NewsSelect,
   ) {
-    const data = await this.PrismaService.news.findFirst({ where, select });
+    const data = await this.PrismaService.news.findFirst({
+      where,
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        image: true,
+        category: true, // Include related category data
+        crowdfounding: true,
+      },
+    });
     if (!data) throw new Error('data.not_found');
     return data;
   }

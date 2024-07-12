@@ -4,14 +4,15 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { CreateCrowdfoundingDto, UpdateCrowdfoundingDto } from '../dtos';
 import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
 import { Crowdfounding } from '@prisma/client';
-// import { Response } from 'express';
-// import * as ExcelJS from 'exceljs';
+import { Response } from 'express';
+import * as ExcelJS from 'exceljs';
+import { title } from 'process';
 
 @Injectable()
 export class CrowdfoundingService {
   constructor(
     private readonly crowdfoundingRepository: CrowdfoundingRepository,
-  ) {}
+  ) { }
 
   public paginate(paginateDto: PaginationQueryDto) {
     return this.crowdfoundingRepository.paginate(paginateDto);
@@ -39,6 +40,7 @@ export class CrowdfoundingService {
       return this.crowdfoundingRepository.create({
         title: CreateCrowdfoundingDto.title,
         statusDonasi: CreateCrowdfoundingDto.status,
+        image: CreateCrowdfoundingDto.image,
         donationTarget: CreateCrowdfoundingDto.donationTarget,
         donationCollected: CreateCrowdfoundingDto.donationCollected,
         donationStartDate: CreateCrowdfoundingDto.donationStartDate,
@@ -62,45 +64,82 @@ export class CrowdfoundingService {
     }
   }
 
-  async withdraw(id: string,body: wihtdrawCrowdfounding) { 
-    const {amount} = body;
-    const crowdfounding: Crowdfounding = await this.crowdfoundingRepository.firtsOrThrow({id});
+  async withdraw(id: string, body: wihtdrawCrowdfounding) {
+    const { amount } = body;
+    const crowdfounding: Crowdfounding & { Donation: { user: { username: string } } } = await this.crowdfoundingRepository.firtsOrThrow({ id });
 
-    if(!crowdfounding) throw new NotFoundException('Crowd Founding tidak ditemukan')
-    if(+crowdfounding.donationCollected < amount) throw new BadRequestException(`Tidak bisa menarik donasi dengan sejumlah ${amount}. Donasi terkumpul ${crowdfounding.donationCollected}`)
+    if (!crowdfounding) throw new NotFoundException('Crowd Founding tidak ditemukan')
+    if (+crowdfounding.donationCollected < amount) throw new BadRequestException(`Tidak bisa menarik donasi dengan sejumlah ${amount}. Donasi terkumpul ${crowdfounding.donationCollected}`)
 
-    await this.crowdfoundingRepository.update({id}, {donationCollected: `${+crowdfounding.donationCollected - amount}`})
+    await this.crowdfoundingRepository.update({ id }, { donationCollected: crowdfounding.donationCollected - amount })
 
-    return {message: `success withdraw ${amount}`}
+    return { message: `success withdraw ${amount}` }
   }
 
-  // p
-  
-  // async exportexcel(response: Response) {
+  // async export(id: string) {
+  //   const crowdfounding: Crowdfounding & {
+  //     Donation: {
+  //       amount: any; status: any; user: { username: string };
+  //     }
+  //   } = await this.crowdfoundingRepository.firtsOrThrow({ id });
+
+  //   console.log(crowdfounding);
+
+
+  //   if (!crowdfounding) throw new NotFoundException('Crowdfounding tidak ditemukan')
+
   //   const workbook = new ExcelJS.Workbook();
-  //   const worksheet = workbook.addWorksheet('Sample Data');
+  //   const worksheet = workbook.addWorksheet('Crowdfounding');
 
   //   worksheet.columns = [
-  //     { header: 'Title', key: 'title' },
-  //     { header: 'Status', key: 'status_donasi' },
-  //     { header: 'Donation Target', key: 'donation_target' },
-  //     { header: 'Donation Collected', key: 'donation_collected' },
-  //     { header: 'Donation Start Date', key: 'donation_start_date' },
-  //     { header: 'Donation Finished Date', key: 'donation_finished_date' },
+  //     { header: 'Judul Donasi', key: 'title', width: 30 },
+  //     { header: 'Donation Collected', key: 'donationCollected', width: 30 },
+  //     { header: 'Donation Target', key: 'donationTarget', width: 30 },
+  //     { header: 'username', key: 'username', width: 30 },
+  //     { header: 'amount', key: 'amount', width: 30 },
+  //     { header: 'status', key: 'status', width: 30 },
   //   ];
-  //   const data = await this.crowdfoundingRepository.find({
-  //     select: {
-  //       title: true,
-  //       status_donasi: true,
-  //       donation_target: true,
-  //       donation_collected: true,
-  //       donation_start_date: true,
-  //       donation_finished_date: true,
-  //     },
+
+  //   worksheet.addRow({
+  //     title: crowdfounding.title,
+  //     donationCollected: crowdfounding.donationCollected,
+  //     donationTarget: crowdfounding.donationTarget,
+  //     user: crowdfounding.Donation.user.username,
+  //     amount: crowdfounding.Donation.amount,
+  //     status: crowdfounding.Donation.status,
+
   //   });
-  //   worksheet.addRows(data);
-  //   workbook.xlsx.write(response).then(function () {
-  //     response.status(200).end();
-  //   });
-  // }
+
+  //   const buffer = await workbook.xlsx.writeBuffer();
+  //   return buffer;
+
+
+  // const workbook = new ExcelJS.Workbook();
+  // const worksheet = workbook.addWorksheet('Crowdfounding');
+  // worksheet.columns = [
+  //   { header: 'ID', key: 'id', width: 5 },
+  //   { header: 'Title', key: 'title', width: 30 },
+  //   { header: 'Donation Collected', key: 'donationCollected', width: 30 },
+  //   { header: 'Donation Target', key: 'donationTarget', width: 30 },
+  //   { header: 'Donation Start Date', key: 'donationStartDate', width: 30 },
+  //   { header: 'Donation Finished Date', key: 'donationFinishedDate', width: 30 },
+  //   { header: 'Created At', key: 'createdAt', width: 30 },
+  //   { header: 'Updated At', key: 'updatedAt', width: 30 },
+  //   { header: 'Deleted At', key: 'deletedAt', width: 30 },
+  // ];
+  // worksheet.addRow({
+  //   id: crowdfounding.id,
+  //   title: crowdfounding.title,
+  //   donationCollected: crowdfounding.donationCollected,
+  //   donationTarget: crowdfounding.donationTarget,
+  //   donationStartDate: crowdfounding.donationStartDate,
+  //   donationFinishedDate: crowdfounding.donationFinishedDate,
+  //   createdAt: crowdfounding.createdAt,
+  //   updatedAt: crowdfounding.updatedAt,
+  //   deletedAt: crowdfounding.deletedAt,
+  // });
+
+  // const buffer = await workbook.xlsx.writeBuffer();
+  // return buffer;
 }
+

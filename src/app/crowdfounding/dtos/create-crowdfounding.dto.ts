@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { status } from '@prisma/client';
-import { IsDateString, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCrowdfoundingDto {
   @ApiProperty()
@@ -13,12 +13,16 @@ export class CreateCrowdfoundingDto {
   status: status;
 
   @ApiProperty()
-  @IsString()
-  donationTarget: string;
+  @IsNumber()
+  donationTarget: number;
 
   @ApiProperty()
-  @IsString()
-  donationCollected: string;
+  @IsNumber()
+  donationCollected: number;
+
+  @ApiProperty()
+  @IsOptional()
+  image: string;
 
   @ApiProperty()
   @IsDateString()

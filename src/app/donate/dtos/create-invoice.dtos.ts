@@ -8,7 +8,7 @@ export class CreateInvoiceDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  amount: number;
+  amount: string;
 
   @ApiPropertyOptional()
   @IsOptional()

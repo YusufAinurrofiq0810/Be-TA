@@ -9,6 +9,6 @@ import { DatabaseModule } from './platform/database/database.module';
   providers: [],
   exports: [DatabaseModule],
 })
-export class MainModule {}
+export class MainModule { }
 
 export { AppModule };

@@ -2,10 +2,10 @@
 CREATE TYPE "role" AS ENUM ('User', 'Admin');
 
 -- CreateEnum
-CREATE TYPE "Status_Berita" AS ENUM ('published', 'unpublished');
+CREATE TYPE "statusberita" AS ENUM ('published', 'unpublished');
 
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('Published', 'Unpublished');
+CREATE TYPE "status" AS ENUM ('published', 'unpublished');
 
 -- CreateEnum
 CREATE TYPE "donatestatus" AS ENUM ('SUCCESS', 'FAILED', 'PENDING');
@@ -15,7 +15,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "fullName" TEXT NOT NULL,
+    "fullname" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "alamat" TEXT NOT NULL,
@@ -29,13 +29,13 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "News" (
-    "id" SERIAL NOT NULL,
-    "crowdfounding_id" INTEGER NOT NULL,
-    "category_id" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "crowdfoundingId" TEXT NOT NULL,
+    "categoryId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "status_Berita" "Status_Berita" NOT NULL,
+    "statusBerita" "statusberita" NOT NULL DEFAULT 'published',
     "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -45,10 +45,9 @@ CREATE TABLE "News" (
 
 -- CreateTable
 CREATE TABLE "Category" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -58,13 +57,14 @@ CREATE TABLE "Category" (
 
 -- CreateTable
 CREATE TABLE "Crowdfounding" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "status_donasi" "Status" NOT NULL,
-    "donation_target" TEXT NOT NULL,
-    "donation_collected" TEXT NOT NULL,
-    "donation_start_date" TIMESTAMP(3) NOT NULL,
-    "donation_finished_date" TIMESTAMP(3) NOT NULL,
+    "image" TEXT NOT NULL,
+    "statusDonasi" "status" NOT NULL DEFAULT 'published',
+    "donationTarget" DOUBLE PRECISION NOT NULL,
+    "donationCollected" DOUBLE PRECISION NOT NULL,
+    "donationStartDate" TIMESTAMP(3) NOT NULL,
+    "donationFinishedDate" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -74,11 +74,11 @@ CREATE TABLE "Crowdfounding" (
 
 -- CreateTable
 CREATE TABLE "Donation" (
-    "id" SERIAL NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "crowdfounding_id" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "crowdfoundingId" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
-    "message" TEXT NOT NULL,
+    "message" TEXT,
     "xenditInvoiceId" TEXT NOT NULL,
     "status" "donatestatus" NOT NULL,
 
@@ -86,13 +86,13 @@ CREATE TABLE "Donation" (
 );
 
 -- AddForeignKey
-ALTER TABLE "News" ADD CONSTRAINT "News_crowdfounding_id_fkey" FOREIGN KEY ("crowdfounding_id") REFERENCES "Crowdfounding"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "News" ADD CONSTRAINT "News_crowdfoundingId_fkey" FOREIGN KEY ("crowdfoundingId") REFERENCES "Crowdfounding"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "News" ADD CONSTRAINT "News_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "News" ADD CONSTRAINT "News_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Donation" ADD CONSTRAINT "Donation_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Donation" ADD CONSTRAINT "Donation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Donation" ADD CONSTRAINT "Donation_crowdfounding_id_fkey" FOREIGN KEY ("crowdfounding_id") REFERENCES "Crowdfounding"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Donation" ADD CONSTRAINT "Donation_crowdfoundingId_fkey" FOREIGN KEY ("crowdfoundingId") REFERENCES "Crowdfounding"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

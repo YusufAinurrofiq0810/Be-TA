@@ -34,37 +34,36 @@ export class NewsService {
     }
   }
 
-  public async create(CreateNewsDto: CreateNewsDto, image: string) {
-    const crowdfounding = await this.prismaService.crowdfounding.findUnique({
-      where: { id: CreateNewsDto.crowdfoundingId },
-    });
-    const category = await this.prismaService.category.findUnique({
-      where: { id: CreateNewsDto.categoryId },
-    });
-
-    if (!crowdfounding) {
-      throw new Error('Crowdfounding Not found');
-    }
-
-    if (!category) {
-      throw new Error('Category Not found');
-    }
+  public async create(createNewsDto: CreateNewsDto) {
     try {
-      return this.newsRepository.create({
-        title: CreateNewsDto.title,
-        crowdfounding: {
-          connect: { id: crowdfounding.id },
-        },
-        category: {
-          connect: { id: category.id },
-        },
-        content: CreateNewsDto.content,
-        image: CreateNewsDto.image,
-        statusBerita: CreateNewsDto.statusBerita,
+      const crowdfounding = await this.prismaService.crowdfounding.findUnique({
+        where: { id: createNewsDto.crowdfoundingId },
       });
+      const category = await this.prismaService.category.findUnique({
+        where: { id: createNewsDto.categoryId },
+      });
+
+      if (!crowdfounding) {
+        throw new Error('Crowdfounding not found');
+      }
+
+      if (!category) {
+        throw new Error('Category not found');
+      }
+
+      const newsData = {
+        title: createNewsDto.title,
+        crowdfounding: { connect: { id: crowdfounding.id } },
+        category: { connect: { id: category.id } },
+        content: createNewsDto.content,
+        image: createNewsDto.image,
+        statusBerita: createNewsDto.statusBerita,
+      };
+
+      return this.newsRepository.create(newsData);
     } catch (error) {
-      console.log(error)
-      throw new Error(error);
+      console.error('Error creating news:', error);
+      throw new Error(error.message);
     }
   }
 

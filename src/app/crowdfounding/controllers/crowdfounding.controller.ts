@@ -9,7 +9,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CrowdfoundingService } from '../services';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
@@ -21,6 +24,8 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
 import { Roles } from 'src/app/auth/decorators/roles.decorator';
 import { wihtdrawCrowdfounding } from '../dtos/create-withdraw.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/config/multer.config';
 
 @ApiTags('Admin')
 @ApiSecurity('JWT')
@@ -33,11 +38,17 @@ export class CrowdfoundingController {
   @Post('create')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
-  public async create(@Body() CreateCrowdfoundingDto: CreateCrowdfoundingDto) {
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  public async create(
+    @Body() createCrowdfoundingDto: CreateCrowdfoundingDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Req() request,
+  ) {
     try {
-      const data = await this.crowdfoundingService.create(
-        CreateCrowdfoundingDto,
-      );
+      if (image) {
+        createCrowdfoundingDto.image = `${request.protocol}://${request.get('Host')}/${image.path.replace(/\\/g, '/')}`
+      }
+      const data = await this.crowdfoundingService.create(createCrowdfoundingDto);
       return new ResponseEntity({
         data,
         message: 'success',
@@ -89,14 +100,21 @@ export class CrowdfoundingController {
   @Put('update/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   public async update(
     @Param('id') id: string,
     @Body() UpdateCrowfoundingDto: UpdateCrowdfoundingDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Req() request,
   ) {
     try {
+      const updateData = {
+        ...UpdateCrowfoundingDto,
+        image: image ? `${request.protocol}://${request.get('Host')}/${image.path.replace(/\\/g, '/')}` : undefined,
+      };
       const data = await this.crowdfoundingService.update(
         id,
-        UpdateCrowfoundingDto,
+        updateData,
       );
       return new ResponseEntity({
         data,
@@ -112,11 +130,12 @@ export class CrowdfoundingController {
   async withdraw(@Param('id') id: string, @Body() body: wihtdrawCrowdfounding) {
     return await this.crowdfoundingService.withdraw(id, body)
   }
-  // @Get('export')
-  // public async export() {
+  // @Roles('Admin')
+  // @Get('export/:id')
+  // public async export(@Param('id') id: string) {
   //   try {
   //     return new ResponseEntity({
-  //       data: await this.crowdfoundingService.export(),
+  //       data: await this.crowdfoundingService.export(id),
   //       message: 'success',
   //     });
   //   } catch (error) {

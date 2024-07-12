@@ -9,7 +9,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { NewsService } from '../services';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
@@ -20,6 +23,9 @@ import { AuthGuard } from 'src/app/auth';
 import { CreateNewsDto, UpdateNewsDto } from '../dtos';
 import { role } from '@prisma/client';
 import { RolesGuard } from 'src/app/auth/guards/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/config/multer.config';
+import { Roles } from 'src/app/role/decorators/role.decorator';
 @ApiTags('Admin')
 @ApiSecurity('JWT')
 @Controller({
@@ -31,10 +37,19 @@ export class NewsController {
   /* The `@Post()` decorator above the `create` method in the `NewsController` class is specifying that
   this method should handle POST requests to the specified route. */
   @Post('create')
-  @UseGuards(AuthGuard, RolesGuard)
-  public async create(@Body() createNewsDto: CreateNewsDto) {
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  @Roles('Admin') // Specify the roles allowed to access this endpoint
+  public async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createNewsDto: CreateNewsDto,
+    @Req() request,
+  ) {
     try {
-      const data = await this.newsService.create(createNewsDto, 'image');
+      if (file) {
+        createNewsDto.image = `${request.protocol}://${request.get('Host')}/${file.path.replace(/\\/g, '/')}`;
+      }
+
+      const data = await this.newsService.create(createNewsDto);
       return new ResponseEntity({
         data,
         message: 'success',
@@ -84,12 +99,22 @@ export class NewsController {
   }
   @Put('update/:id')
   @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   public async update(
     @Param('id') id: string,
     @Body() UpdateNewsDto: UpdateNewsDto,
+    @UploadedFile() image: Express.Multer.File,
+    @Req() request,
   ) {
     try {
-      const data = await this.newsService.update(id, UpdateNewsDto);
+      const updateData = {
+        ...UpdateNewsDto,
+        image: image ? `${request.protocol}://${request.get('Host')}/${image.path.replace(/\\/g, '/')}` : undefined,
+      }
+      console.log(updateData);
+
+      const data = await this.newsService.update(id, updateData,);
       return new ResponseEntity({
         data,
         message: 'success',

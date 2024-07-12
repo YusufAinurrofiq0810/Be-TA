@@ -26,7 +26,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const hasRole = allowedRoles.includes(user.role);
-    console.log(hasRole);
+    // console.log(user);
     if (!hasRole) {
       throw new ForbiddenException('You do not have permission to access this menu');
     }

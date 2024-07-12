@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import {
   Body,
   Controller,
@@ -30,8 +30,8 @@ import { Roles } from 'src/app/auth/decorators/roles.decorator';
   version: '1',
 })
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
-  @Post(':create')
+  constructor(private readonly categoryService: CategoryService) { }
+  @Post('create')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
   public async create(@Body() CreateCategoryDto: CreateCategoryDto) {

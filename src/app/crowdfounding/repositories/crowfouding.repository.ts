@@ -14,7 +14,7 @@ type Filter = {
 };
 @Injectable()
 export class CrowdfoundingRepository {
-  constructor(private readonly PrismaService: PrismaService) {}
+  constructor(private readonly PrismaService: PrismaService) { }
 
   public async paginate(paginateDto: PaginationQueryDto, filter?: Filter) {
     const { limit = 10, page = 1 } = paginateDto;
@@ -23,17 +23,35 @@ export class CrowdfoundingRepository {
       this.PrismaService.crowdfounding.findMany({
         skip: (+page - 1) * +limit,
         take: +limit,
+        include: {
+          Donation: {
+            select: {
+              id: true,
+              amount: true,
+              status: true,
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+          },
+        },
         where: { deletedAt: null, ...filter?.where },
         ...filter,
       }),
-      this.PrismaService.crowdfounding.count(),
+      this.PrismaService.crowdfounding.count({
+        where: { deletedAt: null, ...filter?.where },
+      }),
     ]);
+
     return new PaginatedEntity(data, {
       limit,
       page,
       totalData: count,
     });
   }
+
 
   public async create(data: Prisma.CrowdfoundingCreateInput) {
     return this.PrismaService.crowdfounding.create({ data });
@@ -58,9 +76,9 @@ export class CrowdfoundingRepository {
   //     where: {id},
   //   });
   // }
-  public async updatedonationcollected(id:string, newAmount: string): Promise<Crowdfounding> {
+  public async updatedonationcollected(id: string, newAmount: string): Promise<Crowdfounding> {
     return this.PrismaService.crowdfounding.update({
-      where: {id},
+      where: { id },
       data: { donationCollected: newAmount }
     });
   }
@@ -68,10 +86,41 @@ export class CrowdfoundingRepository {
   public async firtsOrThrow(
     where: Partial<Prisma.CrowdfoundingWhereUniqueInput>,
     select?: Prisma.CrowdfoundingSelect,
-  ) {
+  ): Promise<Crowdfounding> {
     const data = await this.PrismaService.crowdfounding.findFirst({
       where,
-      select,
+      select: {
+        id: true,
+        title: true,
+        image: true, // Add the 'image' property
+        statusDonasi: true,
+        donationTarget: true,
+        donationCollected: true,
+        donationStartDate: true,
+        donationFinishedDate: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        // ...select
+        // Donation: true,
+        Donation: {
+          select: {
+            id: true,
+            amount: true,
+            status: true,
+            user: {
+              select: {
+                id: true,
+                username: true,
+                email: true,
+                createdAt: true,
+                updatedAt: true,
+                deletedAt: true,
+              }
+            }
+          }
+        },
+      }
     });
     if (!data) throw new Error('data.not_found');
     return data;

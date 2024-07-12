@@ -2,9 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { MainModule } from './main.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { join } from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(MainModule);
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   app.enableVersioning({
     type: VersioningType.URI,
   });
@@ -17,8 +20,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    allowedHeaders: '*',
-    origin: '*',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   });
   SwaggerModule.setup('api', app, document);

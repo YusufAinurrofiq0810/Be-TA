@@ -10,7 +10,4 @@ export class CreateCategoryDto {
   @IsString()
   content: string;
 
-  @ApiProperty()
-  @IsString()
-  image: string;
 }

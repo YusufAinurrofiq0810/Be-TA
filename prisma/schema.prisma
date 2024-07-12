@@ -56,7 +56,6 @@ model Category {
   id          String    @id @default(uuid())
   name        String
   description String
-  image       String
   deletedAt   DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -71,9 +70,10 @@ enum status {
 model Crowdfounding {
   id                   String   @id @default(uuid())
   title                String
+  image                String
   statusDonasi         status   @default(published)
-  donationTarget       String
-  donationCollected    String
+  donationTarget       Float
+  donationCollected    Float
   donationStartDate    DateTime
   donationFinishedDate DateTime
 

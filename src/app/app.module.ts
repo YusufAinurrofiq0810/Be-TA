@@ -7,11 +7,12 @@ import { NewsModule } from './news/news.module';
 import { CategoryModule } from './category';
 import { CrowdfoundingModule } from './crowdfounding';
 import { DonateModule } from './donate/donate.module';
+import { DashboardModule } from './dashboard';
 
 @ApiTags('App Spec')
 @Controller()
 class AppController {
-  constructor() {}
+  constructor() { }
 
   @Get()
   getHello() {
@@ -32,7 +33,8 @@ class AppController {
     CategoryModule,
     CrowdfoundingModule,
     DonateModule,
+    DashboardModule
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule { }
