@@ -67,7 +67,7 @@ export class DonateService {
       await this.prismaService.crowdfounding.update({
         where: { id: crowdFounding.id },
         data: {
-          donationCollected: `${crowdFounding.donationCollected + createDonateDto.amount}`,
+          donationCollected: crowdFounding.donationCollected + donation.amount,
         },
       });
     } catch (error) {

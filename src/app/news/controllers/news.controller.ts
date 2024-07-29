@@ -60,9 +60,9 @@ export class NewsController {
   }
   @Get('get')
   @UseGuards(AuthGuard)
-  public async index(@Query() PaginationDto: PaginationQueryDto) {
+  public async index(@Query() PaginationDto: PaginationQueryDto, @Query('search') search: string) {
     try {
-      const data = await this.newsService.paginate(PaginationDto);
+      const data = await this.newsService.paginate(PaginationDto, search);
       return new ResponseEntity({
         data,
         message: 'succes',

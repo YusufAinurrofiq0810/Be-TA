@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -48,6 +49,12 @@ export class CrowdfoundingController {
       if (image) {
         createCrowdfoundingDto.image = `${request.protocol}://${request.get('Host')}/${image.path.replace(/\\/g, '/')}`
       }
+      createCrowdfoundingDto.donationTarget = createCrowdfoundingDto.donationTarget;
+      createCrowdfoundingDto.donationCollected = createCrowdfoundingDto.donationCollected;
+      createCrowdfoundingDto.donationStartDate = new Date(createCrowdfoundingDto.donationStartDate);
+      createCrowdfoundingDto.donationFinishedDate = new Date(createCrowdfoundingDto.donationFinishedDate);
+      createCrowdfoundingDto.status = createCrowdfoundingDto.status;
+
       const data = await this.crowdfoundingService.create(createCrowdfoundingDto);
       return new ResponseEntity({
         data,
@@ -59,9 +66,9 @@ export class CrowdfoundingController {
   }
   @Get('get')
   @UseGuards(AuthGuard)
-  public async index(@Query() PaginationDto: PaginationQueryDto) {
+  public async index(@Query() PaginationDto: PaginationQueryDto, @Query('search') search: string) {
     try {
-      const data = await this.crowdfoundingService.paginate(PaginationDto);
+      const data = await this.crowdfoundingService.paginate(PaginationDto, search);
       return new ResponseEntity({
         data,
         message: 'success',
@@ -111,11 +118,13 @@ export class CrowdfoundingController {
       const updateData = {
         ...UpdateCrowfoundingDto,
         image: image ? `${request.protocol}://${request.get('Host')}/${image.path.replace(/\\/g, '/')}` : undefined,
-      };
-      const data = await this.crowdfoundingService.update(
-        id,
-        updateData,
-      );
+
+      }
+      const data = await this.
+        crowdfoundingService.update(
+          id,
+          updateData,
+        );
       return new ResponseEntity({
         data,
         message: 'success',
@@ -130,16 +139,9 @@ export class CrowdfoundingController {
   async withdraw(@Param('id') id: string, @Body() body: wihtdrawCrowdfounding) {
     return await this.crowdfoundingService.withdraw(id, body)
   }
-  // @Roles('Admin')
-  // @Get('export/:id')
-  // public async export(@Param('id') id: string) {
-  //   try {
-  //     return new ResponseEntity({
-  //       data: await this.crowdfoundingService.export(id),
-  //       message: 'success',
-  //     });
-  //   } catch (error) {
-  //     throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-  //   }
-  // }
+
+  @Get('export/:id')
+  async exportToExcel(@Param('id') id: string, @Res() res) {
+    return await this.crowdfoundingService.exportToExcel(res, id);
+  }
 }

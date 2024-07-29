@@ -13,12 +13,12 @@ export class CreateCrowdfoundingDto {
   status: status;
 
   @ApiProperty()
-  @IsNumber()
-  donationTarget: number;
+  @IsString()
+  donationTarget: string;
 
   @ApiProperty()
-  @IsNumber()
-  donationCollected: number;
+  @IsString()
+  donationCollected: string;
 
   @ApiProperty()
   @IsOptional()

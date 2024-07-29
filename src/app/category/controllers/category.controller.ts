@@ -47,9 +47,9 @@ export class CategoryController {
   }
   @Get('get')
   @UseGuards(AuthGuard)
-  public async index(@Query() PaginationQueryDto: PaginationQueryDto) {
+  public async index(@Query() PaginationQueryDto: PaginationQueryDto, @Query('search') search: string) {
     try {
-      const data = await this.categoryService.paginate(PaginationQueryDto);
+      const data = await this.categoryService.paginate(PaginationQueryDto, search);
       return new ResponseEntity({
         data,
         message: 'succes',
@@ -76,6 +76,7 @@ export class CategoryController {
   @Roles('Admin')
   public async destroy(@Param('id') id: string) {
     try {
+
       const data = await this.categoryService.destroy(id);
       return new ResponseEntity({
         data,

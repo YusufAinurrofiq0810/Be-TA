@@ -6,7 +6,7 @@ import { PaginatedEntity } from 'src/common/entities/paginated.entity';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PrismaService } from 'src/platform/database/services/prisma.service';
 
-type Filter = {
+export type Filter = {
   where?: Prisma.CategoryWhereInput;
   orderBy?: Prisma.CategoryOrderByWithRelationInput;
   cursor?: Prisma.CategoryWhereUniqueInput;
@@ -16,7 +16,7 @@ type Filter = {
 
 @Injectable()
 export class CategoryRepository {
-  constructor(private readonly PrismaService: PrismaService) {}
+  constructor(private readonly PrismaService: PrismaService) { }
 
   public async paginate(paginateDto: PaginationQueryDto, filter?: Filter) {
     const { limit = 10, page = 1 } = paginateDto;
@@ -60,7 +60,7 @@ export class CategoryRepository {
     select?: Prisma.CategorySelect,
   ) {
     const data = await this.PrismaService.category.findFirst({ where, select });
-    if (!data) throw new error('data.not_found');
+    if (!data) throw new Error('data.not_found');
     return data;
   }
 

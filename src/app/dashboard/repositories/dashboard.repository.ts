@@ -7,9 +7,16 @@ export class DashboardRepository {
 
   public async paginate(paginateDto: any) {
     const [TotalNews, TotalCategories, TotalCrowdfunding,] = await Promise.all([
-      this.prismaService.news.count(),
-      this.prismaService.category.count(),
-      this.prismaService.crowdfounding.count(),
+      this.prismaService.news.count({
+        where: { deletedAt: null }
+      }),
+      this.prismaService.category.count({
+        where: { deletedAt: null },
+
+      }),
+      this.prismaService.crowdfounding.count({
+        where: { deletedAt: null },
+      }),
     ]);
     return {
       TotalNews,

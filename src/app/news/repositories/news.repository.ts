@@ -5,7 +5,7 @@ import { PaginatedEntity } from 'src/common/entities/paginated.entity';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PrismaService } from 'src/platform/database/services/prisma.service';
 
-type Filter = {
+export type Filter = {
   where?: Prisma.NewsWhereInput;
   orderBy?: Prisma.NewsOrderByWithRelationInput;
   cursor?: Prisma.NewsWhereUniqueInput;
@@ -43,9 +43,22 @@ export class NewsRepository {
 
   public async update(
     where: Prisma.NewsWhereUniqueInput,
-    data: Prisma.NewsUpdateInput,
+    data: any = {},
+    oldData: Prisma.NewsCreateInput,
   ) {
-    return this.PrismaService.news.update({ where, data });
+    return this.PrismaService.news.update({
+      where: {
+        id: where.id,
+      },
+      data: {
+        title: data.title || oldData.title,
+        content: data.content || oldData.content,
+        image: data.image || oldData.image,
+        categoryId: data.categoryId,
+        crowdfoundingId: data.crowdfoundingId,
+        statusBerita: data.statusBerita,
+      },
+    } as Prisma.NewsUpdateArgs);
   }
 
   public async delete(where: Prisma.NewsWhereUniqueInput) {
@@ -62,12 +75,14 @@ export class NewsRepository {
     const data = await this.PrismaService.news.findFirst({
       where,
       select: {
-        id: true,
         title: true,
         content: true,
         image: true,
         category: true, // Include related category data
         crowdfounding: true,
+        categoryId: true,
+        crowdfoundingId: true,
+        statusBerita: true,
       },
     });
     if (!data) throw new Error('data.not_found');
