@@ -5,6 +5,7 @@ import { Invoice } from 'xendit-node/invoice/models';
 import { PrismaService } from 'src/platform/database/services/prisma.service';
 import { CreateDonateDto } from '../dtos';
 import { v4 as uuidv4 } from 'uuid';
+import { UpdateCrowdfoundingDto } from 'src/app/crowdfounding/dtos';
 @Injectable()
 export class DonateService {
   // private readonly XENDIT_URL = 'https://api.xendit.co/v2/invoices';
@@ -68,6 +69,7 @@ export class DonateService {
         where: { id: crowdFounding.id },
         data: {
           donationCollected: crowdFounding.donationCollected + donation.amount,
+          statusDonasi: crowdFounding.donationCollected + donation.amount >= crowdFounding.donationTarget ? 'unpublished' : crowdFounding.statusDonasi,
         },
       });
     } catch (error) {

@@ -100,71 +100,50 @@ export class CrowdfoundingService {
   }
 
   public async exportToExcel(res: Response, id: string) {
-    const crowdfoundings: any = await this.crowdfoundingRepository.firtsOrThrow({ id: id, Donation: {} })
+    const crowdfoundings: any = await this.crowdfoundingRepository.firtsOrThrow({ id: id, Donation: {} });
     if (!crowdfoundings) throw new NotFoundException('Crowdfounding not found');
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Crowdfounding');
+    const worksheet = workbook.addWorksheet(`Crowdfounding ${crowdfoundings.title}`);
+
+    // Menambahkan informasi detail crowdfounding di bagian atas worksheet
+    worksheet.addRow(['Laporan informasi detail donasi']);
+    worksheet.getRow(1).font = { bold: true, size: 14 };
+
+    worksheet.addRow(['Nama Donasi', crowdfoundings.title]);
+
+    worksheet.addRow(['Status Donasi', crowdfoundings.statusDonasi]);
+
+    worksheet.addRow(['Donasi Target', `Rp${crowdfoundings.donationTarget.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}`]);
+
+    worksheet.addRow(['Donasi Terkumpul', `Rp${crowdfoundings.donationCollected.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}`]);
+
+    worksheet.addRow(['Donasi dimulai', crowdfoundings.donationStartDate]);
+
+    worksheet.addRow(['Donasi berakhir', crowdfoundings.donationFinishedDate]);
+
+    // Menambahkan jarak antara informasi detail crowdfounding dan tabel donasi
+    worksheet.addRow([]);
+
+    // Menambahkan header tabel donasi
+    worksheet.addRow(['Nama pengirim', 'Jumlah donasi', 'Status Pembayaran']);
     worksheet.columns = [
-      { header: 'Nama Donasi', key: 'title', width: 30 },
-      {
-        header: 'Status Donasi',
-        key
-          : 'statusDonasi',
-        width: 15,
-      },
-      {
-        header: 'Donasi Target',
-        key: 'donationTarget',
-        width: 15,
-      },
-      {
-        header: 'Donasi Terkumpul',
-        key: 'donationCollected',
-        width: 15,
-      },
-      {
-        header: 'Donasi dimulai',
-        key: 'donationStartDate',
-        width: 20,
-      },
-      {
-        header: 'Donasi berakhir',
-        key: 'donationFinishedDate',
-        width: 20,
-      },
-      {
-        header: 'Nama Pengirim',
-        key: 'donorUsername',
-        width: 20,
-      },
-      {
-        header: 'Jumlah Donasi',
-        key: 'donationAmount',
-        width: 20,
-      },
-      {
-        header: 'Status Donasi',
-        key: 'status',
-        width: 20,
-      }
+      { key: 'donorUsername', width: 20 },
+      { key: 'donationAmount', width: 20 },
+      { key: 'status', width: 20 }
     ];
+
+    // Menambahkan data donasi ke tabel
     crowdfoundings?.Donation?.forEach((Donation: any) => {
       worksheet.addRow({
-        title: crowdfoundings.title,
-        statusDonasi: crowdfoundings.statusDonasi,
-        donationTarget: crowdfoundings.donationTarget,
-        donationCollected: crowdfoundings.donationCollected,
-        donationStartDate: crowdfoundings.donationStartDate,
-        donationFinishedDate: crowdfoundings.donationFinishedDate,
         donorUsername: Donation.user.username,
         donationAmount: Donation.amount,
         status: Donation.status,
       });
-
     });
-    // Set header styling
-    worksheet.getRow(1).font = { bold: true };
+
+    // Set header styling untuk tabel donasi
+    worksheet.getRow(9).font = { bold: true }; // Mengatur baris header pada baris ke-9 agar tebal
 
     // Write to response
     res.setHeader(
@@ -179,6 +158,8 @@ export class CrowdfoundingService {
     await workbook.xlsx.write(res);
     res.end();
   }
+
+
 
 }
 
